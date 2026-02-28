@@ -310,3 +310,47 @@
     transform: translateY(0);
   }
 }
+
+/* ── Coach Mode SRS Summary ─────────── */
+.coachSummary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  animation: fadeInUp 0.5s ease-out 0.4s both;
+}
+
+.srsBadge {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.3rem 0.75rem;
+  border-radius: 9999px;
+}
+
+.srsMastered {
+  background: color-mix(in srgb, var(--neon-green) 15%, transparent);
+  color: var(--neon-green);
+}
+
+.srsImproving {
+  background: color-mix(in srgb, var(--neon-amber) 15%, transparent);
+  color: var(--neon-amber);
+}
+
+.srsNeedsPractice {
+  background: color-mix(in srgb, var(--neon-magenta) 15%, transparent);
+  color: var(--neon-magenta);
+}
+
+.srsSeparator {
+  color: var(--muted-foreground);
+  font-size: 0.8rem;
+}
+
+/* ── Keyboard highlight for action buttons ─── */
+.actionHighlighted {
+  outline: 2px solid var(--neon-cyan) !important;
+  outline-offset: 2px;
+}

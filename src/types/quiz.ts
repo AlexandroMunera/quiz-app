@@ -1,5 +1,7 @@
 export type Level = "junior" | "mid" | "senior";
 
+export type QuizMode = "standard" | "coach";
+
 export type Topic =
   | "core-js"
   | "functions-closures"
@@ -29,6 +31,7 @@ export interface QuizAnswer {
 }
 
 export interface QuizState {
+  mode: QuizMode;
   level: Level | null;
   questions: Question[];
   currentIndex: number;

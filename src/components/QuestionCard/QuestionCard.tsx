@@ -17,6 +17,7 @@ interface QuestionCardProps {
   onNext: () => void;
   isLast: boolean;
   streak?: number;
+  highlightedIndex?: number | null;
 }
 
 function parseQuestionText(text: string) {
@@ -42,6 +43,7 @@ export function QuestionCard({
   onNext,
   isLast,
   streak = 0,
+  highlightedIndex = null,
 }: QuestionCardProps) {
   const { text, code } = parseQuestionText(question.text);
   const isCorrect = selectedOptionId === question.correctOptionId;
@@ -90,6 +92,7 @@ export function QuestionCard({
         <div className={styles.options}>
           {question.options.map((option, index) => {
             let optionClass = styles.optionLabel;
+            const isHighlighted = highlightedIndex === index && !hasAnswered;
 
             if (hasAnswered) {
               if (option.id === question.correctOptionId) {
@@ -102,6 +105,8 @@ export function QuestionCard({
               } else {
                 optionClass = cn(styles.optionLabel, styles.optionDisabled);
               }
+            } else if (isHighlighted) {
+              optionClass = cn(styles.optionLabel, styles.optionHighlighted);
             }
 
             return (

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useQuizContext } from "@/context/QuizContext";
@@ -6,6 +6,9 @@ import { LEVEL_LABELS, TOPIC_LABELS } from "@/types/quiz";
 import { cn } from "@/lib/utils";
 import { MascotBubble } from "@/components/Mascot/MascotBubble";
 import { getScoreReaction } from "@/components/Mascot/mascot.config";
+import { getCoachStore } from "@/hooks/useCoachStore";
+import { useKeyboardNav } from "@/hooks/useKeyboardNav";
+import confetti from "canvas-confetti";
 import styles from "./ResultsPage.module.css";
 
 function getScoreClass(percentage: number): string {
@@ -24,7 +27,9 @@ export function ResultsPage() {
     }
   }, [state.isComplete, navigate]);
 
-  if (!state.isComplete || !state.level) {
+  const isCoach = state.mode === "coach";
+
+  if (!state.isComplete || (!state.level && !isCoach)) {
     return null;
   }
 
@@ -33,6 +38,112 @@ export function ResultsPage() {
   const total = state.questions.length;
   const percentage = Math.round((score / total) * 100);
   const reaction = getScoreReaction(percentage);
+
+  // Coach mode SRS summary
+  let coachSummary: { mastered: number; improving: number; needsPractice: number } | null = null;
+  if (isCoach) {
+    const store = getCoachStore();
+    let mastered = 0;
+    let improving = 0;
+    let needsPractice = 0;
+    for (const q of state.questions) {
+      const item = store.items[q.id];
+      if (!item || item.correctStreak === 0) {
+        needsPractice++;
+      } else if (item.correctStreak >= 3) {
+        mastered++;
+      } else {
+        improving++;
+      }
+    }
+    coachSummary = { mastered, improving, needsPractice };
+  }
+
+  // Action buttons for keyboard nav
+  const actions = [
+    {
+      label: isCoach ? "Back to Levels" : "Try Another Level",
+      primary: false,
+      handler: () => {
+        navigate("/select-level");
+        resetQuiz();
+      },
+    },
+    {
+      label: "Back to Home",
+      primary: true,
+      handler: () => {
+        navigate("/");
+        resetQuiz();
+      },
+    },
+  ];
+
+  return (
+    <ResultsContent
+      percentage={percentage}
+      score={score}
+      total={total}
+      reaction={reaction}
+      results={results}
+      isCoach={isCoach}
+      level={state.level}
+      coachSummary={coachSummary}
+      actions={actions}
+    />
+  );
+}
+
+/** Inner component so hooks can run unconditionally. */
+function ResultsContent({
+  percentage,
+  score,
+  total,
+  reaction,
+  results,
+  isCoach,
+  level,
+  coachSummary,
+  actions,
+}: {
+  percentage: number;
+  score: number;
+  total: number;
+  reaction: { emoji: string; message: string; hint: string | null };
+  results: ReturnType<ReturnType<typeof useQuizContext>["getResults"]>;
+  isCoach: boolean;
+  level: import("@/types/quiz").Level | null;
+  coachSummary: { mastered: number; improving: number; needsPractice: number } | null;
+  actions: Array<{ label: string; primary: boolean; handler: () => void }>;
+}) {
+  // Perfect-score confetti
+  useEffect(() => {
+    if (percentage !== 100) return;
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (prefersReducedMotion) return;
+
+    confetti({
+      particleCount: 150,
+      spread: 70,
+      origin: { y: 0.6 },
+    });
+  }, [percentage]);
+
+  // Keyboard nav for action buttons
+  const handleActionSelect = useCallback(
+    (index: number) => {
+      actions[index]?.handler();
+    },
+    [actions],
+  );
+
+  const { highlightedIndex } = useKeyboardNav({
+    itemCount: actions.length,
+    onSelect: handleActionSelect,
+    enabled: true,
+  });
 
   return (
     <div className={styles.container}>
@@ -67,7 +178,9 @@ export function ResultsPage() {
           </div>
         </div>
 
-        <h1 className={styles.scoreTitle}>Quiz Complete!</h1>
+        <h1 className={styles.scoreTitle}>
+          {isCoach ? "Coach Session Complete!" : "Quiz Complete!"}
+        </h1>
 
         <MascotBubble
           message={reaction.message}
@@ -77,29 +190,58 @@ export function ResultsPage() {
 
         {reaction.hint && <p className={styles.motivationalHint}>{reaction.hint}</p>}
 
-        <span className={styles.levelBadge}>
-          {LEVEL_LABELS[state.level]} Level
-        </span>
+        {/* Coach Mode SRS summary badges */}
+        {coachSummary && (
+          <div className={styles.coachSummary}>
+            <span className={cn(styles.srsBadge, styles.srsMastered)}>
+              ✓ {coachSummary.mastered} mastered
+            </span>
+            <span className={styles.srsSeparator}>·</span>
+            <span className={cn(styles.srsBadge, styles.srsImproving)}>
+              ↗ {coachSummary.improving} improving
+            </span>
+            <span className={styles.srsSeparator}>·</span>
+            <span className={cn(styles.srsBadge, styles.srsNeedsPractice)}>
+              ✗ {coachSummary.needsPractice} need practice
+            </span>
+          </div>
+        )}
+
+        {!isCoach && level && (
+          <span className={styles.levelBadge}>
+            {LEVEL_LABELS[level]} Level
+          </span>
+        )}
+        {isCoach && (
+          <span className={styles.levelBadge}>🧠 Coach Mode</span>
+        )}
 
         <div className={styles.actions}>
-          <button
-            className={styles.outlineBtn}
-            onClick={() => {
-              resetQuiz();
-              navigate("/select-level");
-            }}
-          >
-            Try Another Level
-          </button>
-          <Button
-            className={styles.primaryBtn}
-            onClick={() => {
-              resetQuiz();
-              navigate("/");
-            }}
-          >
-            Back to Home
-          </Button>
+          {actions.map((action, index) =>
+            action.primary ? (
+              <Button
+                key={action.label}
+                className={cn(
+                  styles.primaryBtn,
+                  highlightedIndex === index && styles.actionHighlighted,
+                )}
+                onClick={action.handler}
+              >
+                {action.label}
+              </Button>
+            ) : (
+              <button
+                key={action.label}
+                className={cn(
+                  styles.outlineBtn,
+                  highlightedIndex === index && styles.actionHighlighted,
+                )}
+                onClick={action.handler}
+              >
+                {action.label}
+              </button>
+            ),
+          )}
         </div>
       </div>
 

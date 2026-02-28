@@ -193,6 +193,19 @@
   opacity: 0.45;
 }
 
+/* ── Keyboard highlight state ───────── */
+.optionHighlighted {
+  border-color: var(--neon-cyan) !important;
+  outline: 2px solid var(--neon-cyan);
+  outline-offset: -1px;
+  background: color-mix(in srgb, var(--neon-cyan) 6%, transparent);
+}
+
+.optionHighlighted .optionIndex {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+}
+
 /* ── Explanation alert ──────────────── */
 .explanation {
   margin-top: 1rem;

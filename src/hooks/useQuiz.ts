@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
-import type { Level, QuizAnswer, QuizResult, QuizState } from "@/types/quiz";
+import type { Level, Question, QuizAnswer, QuizResult, QuizState } from "@/types/quiz";
 import { questions as allQuestions } from "@/data/questions";
+import { updateItem as updateCoachItem } from "@/hooks/useCoachStore";
 
 const QUESTIONS_PER_QUIZ = 10;
 
@@ -14,6 +15,7 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 const initialState: QuizState = {
+  mode: "standard",
   level: null,
   questions: [],
   currentIndex: 0,
@@ -28,11 +30,32 @@ export function useQuiz() {
   const startQuiz = useCallback((level: Level) => {
     const filtered = allQuestions.filter((q) => q.level === level);
     const shuffled = shuffleArray(filtered);
-    const selected = shuffled.slice(0, QUESTIONS_PER_QUIZ);
+    const selected = shuffled.slice(0, QUESTIONS_PER_QUIZ).map((q) => ({
+      ...q,
+      options: shuffleArray(q.options),
+    }));
 
     setState({
+      mode: "standard",
       level,
       questions: selected,
+      currentIndex: 0,
+      answers: [],
+      isComplete: false,
+      hasAnsweredCurrent: false,
+    });
+  }, []);
+
+  const startCoachMode = useCallback((questions: Question[]) => {
+    const prepared = shuffleArray(questions).map((q) => ({
+      ...q,
+      options: shuffleArray(q.options),
+    }));
+
+    setState({
+      mode: "coach",
+      level: null,
+      questions: prepared,
       currentIndex: 0,
       answers: [],
       isComplete: false,
@@ -60,6 +83,19 @@ export function useQuiz() {
     setState((prev) => {
       const nextIndex = prev.currentIndex + 1;
       if (nextIndex >= prev.questions.length) {
+        // Quiz is complete — update coach store
+        for (const answer of prev.answers) {
+          const question = prev.questions.find(
+            (q) => q.id === answer.questionId
+          );
+          if (!question) continue;
+          const isCorrect =
+            question.correctOptionId === answer.selectedOptionId;
+          // Update coach store: incorrect in any mode, correct only in coach mode
+          if (!isCorrect || prev.mode === "coach") {
+            updateCoachItem(question.id, isCorrect, prev.mode === "coach");
+          }
+        }
         return { ...prev, isComplete: true };
       }
       return {
@@ -110,6 +146,7 @@ export function useQuiz() {
     currentQuestion,
     currentAnswer,
     startQuiz,
+    startCoachMode,
     selectAnswer,
     nextQuestion,
     getResults,

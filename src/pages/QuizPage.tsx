@@ -1,9 +1,10 @@
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { QuestionCard } from "@/components/QuestionCard/QuestionCard";
 import { MascotLoading } from "@/components/Mascot/MascotLoading";
 import { useQuizContext } from "@/context/QuizContext";
 import { LEVEL_LABELS } from "@/types/quiz";
+import { useKeyboardNav } from "@/hooks/useKeyboardNav";
 import styles from "./QuizPage.module.css";
 
 export function QuizPage() {
@@ -17,14 +18,14 @@ export function QuizPage() {
   } = useQuizContext();
 
   useEffect(() => {
-    if (!state.level) {
+    if (!state.level && state.mode !== "coach") {
       navigate("/select-level");
       return;
     }
     if (state.isComplete) {
       navigate("/results");
     }
-  }, [state.level, state.isComplete, navigate]);
+  }, [state.level, state.mode, state.isComplete, navigate]);
 
   const currentStreak = useMemo(() => {
     let streak = 0;
@@ -40,7 +41,48 @@ export function QuizPage() {
     return streak;
   }, [state.answers, state.questions]);
 
-  if (!currentQuestion || !state.level) {
+  const handleKeySelect = useCallback(
+    (index: number) => {
+      if (!currentQuestion) return;
+      if (!state.hasAnsweredCurrent) {
+        // Submit the highlighted option
+        const option = currentQuestion.options[index];
+        if (option) {
+          selectAnswer(currentQuestion.id, option.id);
+        }
+      }
+    },
+    [currentQuestion, state.hasAnsweredCurrent, selectAnswer],
+  );
+
+  const { highlightedIndex, resetHighlight } = useKeyboardNav({
+    itemCount: currentQuestion?.options.length ?? 0,
+    onSelect: handleKeySelect,
+    enabled: !!currentQuestion,
+    allowNumberKeys: true,
+  });
+
+  // Handle Enter after answering to advance
+  useEffect(() => {
+    if (!state.hasAnsweredCurrent) return;
+
+    function handleEnter(e: KeyboardEvent) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        nextQuestion();
+      }
+    }
+
+    window.addEventListener("keydown", handleEnter);
+    return () => window.removeEventListener("keydown", handleEnter);
+  }, [state.hasAnsweredCurrent, nextQuestion]);
+
+  // Reset highlight when moving to next question
+  useEffect(() => {
+    resetHighlight();
+  }, [state.currentIndex, resetHighlight]);
+
+  if (!currentQuestion || (!state.level && state.mode !== "coach")) {
     return <MascotLoading message="Loading your quiz…" />;
   }
 
@@ -54,7 +96,11 @@ export function QuizPage() {
       <div className={styles.progressSection}>
         <div className={styles.progressInfo}>
           <span className={styles.levelBadge}>
-            {LEVEL_LABELS[state.level]}
+            {state.mode === "coach"
+              ? "🧠 Coach Mode"
+              : state.level
+                ? LEVEL_LABELS[state.level]
+                : ""}
           </span>
           <span className={styles.counter}>
             {state.currentIndex + 1}
@@ -82,6 +128,7 @@ export function QuizPage() {
         onNext={nextQuestion}
         isLast={state.currentIndex === state.questions.length - 1}
         streak={currentStreak}
+        highlightedIndex={highlightedIndex}
       />
     </div>
   );
