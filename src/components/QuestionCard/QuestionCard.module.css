@@ -1,0 +1,84 @@
+.card {
+  width: 100%;
+}
+
+.questionNumber {
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+  font-weight: 500;
+}
+
+.questionText {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.codeBlock {
+  background-color: hsl(var(--muted));
+  border-radius: 0.5rem;
+  padding: 1rem;
+  font-family: "Fira Code", "Cascadia Code", monospace;
+  font-size: 0.875rem;
+  overflow-x: auto;
+  margin-top: 0.75rem;
+  white-space: pre;
+  line-height: 1.5;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.optionLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s;
+  font-size: 0.9375rem;
+}
+
+.optionLabel:hover {
+  border-color: hsl(var(--primary));
+  background-color: hsl(var(--accent));
+}
+
+.optionLabel[data-state="checked"] {
+  border-color: hsl(var(--primary));
+  background-color: hsl(var(--accent));
+}
+
+.optionCorrect {
+  border-color: hsl(142.1 76.2% 36.3%) !important;
+  background-color: hsl(142.1 76.2% 36.3% / 0.1) !important;
+}
+
+.optionIncorrect {
+  border-color: hsl(0 84.2% 60.2%) !important;
+  background-color: hsl(0 84.2% 60.2% / 0.1) !important;
+}
+
+.optionDisabled {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.explanation {
+  margin-top: 0.5rem;
+}
