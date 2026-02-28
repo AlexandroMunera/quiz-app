@@ -95,6 +95,126 @@
   background: color-mix(in srgb, var(--neon-amber) 8%, transparent);
 }
 
+/* ── Auth controls ───────────────────── */
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.authSpinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  color: var(--muted-foreground);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinIcon {
+  animation: spin 0.8s linear infinite;
+}
+
+.avatarButton {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 9999px;
+  transition: opacity 0.2s, box-shadow 0.2s;
+}
+
+.avatarButton:hover {
+  opacity: 0.85;
+  box-shadow: 0 0 0 2px var(--neon-cyan);
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  font-size: 0.75rem;
+}
+
+.signInButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 36px;
+  padding: 0 0.875rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--foreground);
+  font-family: "Outfit", sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.signInButton:hover {
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--neon-cyan) 25%, transparent);
+  background: color-mix(in srgb, var(--neon-cyan) 6%, var(--glass-bg));
+}
+
+.signInButton:active {
+  transform: scale(0.97);
+}
+
+.signInButton svg {
+  flex-shrink: 0;
+}
+
+.signInLabel {
+  line-height: 1;
+}
+
+/* ── Account dropdown ────────────────── */
+
+.dropdownContent {
+  min-width: 200px;
+}
+
+.dropdownLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.dropdownName {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--foreground);
+}
+
+.dropdownEmail {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  font-weight: 400;
+}
+
+.dropdownSignOut {
+  color: var(--neon-magenta);
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.dropdownSignOut:hover {
+  color: var(--neon-magenta) !important;
+  background: color-mix(in srgb, var(--neon-magenta) 8%, transparent) !important;
+}
+
 .main {
   flex: 1;
   max-width: 960px;

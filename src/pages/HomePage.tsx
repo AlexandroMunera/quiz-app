@@ -1,9 +1,35 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { MascotBubble } from "@/components/Mascot/MascotBubble";
+import { useAuthContext } from "@/context/AuthContext";
+import { getCoachQueueCount } from "@/hooks/useCoachStore";
 import styles from "./HomePage.module.css";
+
+const SESSION_KEY = "jess-signin-nudge-shown";
 
 export function HomePage() {
   const navigate = useNavigate();
+  const { user, authLoading } = useAuthContext();
+  const [nudgeMessage, setNudgeMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (authLoading) return;
+    if (user) return;
+    if (sessionStorage.getItem(SESSION_KEY)) return;
+
+    const hasCoachData = getCoachQueueCount() > 0;
+    if (hasCoachData) {
+      setNudgeMessage(
+        "Welcome back! Your progress is saved only on this device — sign in to back it up. ☁️"
+      );
+    } else {
+      setNudgeMessage(
+        "Hey! Sign in so I can remember your progress next time 🔐"
+      );
+    }
+    sessionStorage.setItem(SESSION_KEY, "1");
+  }, [authLoading, user]);
 
   return (
     <div className={styles.container}>
@@ -22,6 +48,12 @@ export function HomePage() {
           From fundamentals to advanced concepts — prove you're not just guessing.
         </p>
       </div>
+
+      {nudgeMessage && (
+        <div className={styles.nudgeBubble}>
+          <MascotBubble message={nudgeMessage} size="sm" variant="info" />
+        </div>
+      )}
 
       <Button
         size="lg"

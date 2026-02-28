@@ -278,11 +278,40 @@
   letter-spacing: 0.04em;
 }
 
+.syncBadge {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.6rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.syncBadgeSynced {
+  background: color-mix(in srgb, var(--neon-green) 12%, transparent);
+  color: var(--neon-green);
+}
+
+.syncBadgeLocal {
+  background: color-mix(in srgb, var(--neon-amber) 12%, transparent);
+  color: var(--neon-amber);
+}
+
 .coachDescription {
   font-family: "Outfit", sans-serif;
   font-size: 0.875rem;
   color: var(--muted-foreground);
   line-height: 1.5;
+}
+
+.coachSyncHint {
+  font-family: "Outfit", sans-serif;
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  opacity: 0.7;
+  line-height: 1.4;
 }
 
 .coachMascot {

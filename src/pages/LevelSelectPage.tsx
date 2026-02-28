@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuizContext } from "@/context/QuizContext";
+import { useAuthContext } from "@/context/AuthContext";
 import type { Level } from "@/types/quiz";
 import { LEVEL_LABELS, LEVEL_DESCRIPTIONS } from "@/types/quiz";
 import { MascotBubble } from "@/components/Mascot/MascotBubble";
@@ -31,6 +32,7 @@ const levelAccent: Record<Level, string> = {
 export function LevelSelectPage() {
   const navigate = useNavigate();
   const { startQuiz, startCoachMode } = useQuizContext();
+  const { user } = useAuthContext();
 
   const coachTotal = getCoachQueueCount();
   const coachDue = getDueCount();
@@ -125,6 +127,14 @@ export function LevelSelectPage() {
         <div className={styles.coachHeader}>
           <span className={styles.coachIcon}>🧠</span>
           <span className={styles.coachTitle}>Coach Mode</span>
+          {coachEnabled && (
+            <span className={cn(
+              styles.syncBadge,
+              user ? styles.syncBadgeSynced : styles.syncBadgeLocal,
+            )}>
+              {user ? "☁️ Synced" : "💾 Local only"}
+            </span>
+          )}
           {coachEnabled ? (
             <span className={styles.coachBadge}>
               {coachDue > 0 ? `${coachDue} due` : `${coachTotal} to review`}
@@ -138,6 +148,11 @@ export function LevelSelectPage() {
             ? "Practice questions you've missed before. Powered by spaced repetition."
             : "Complete a quiz and miss a question to unlock Coach Mode."}
         </p>
+        {!user && (
+          <p className={styles.coachSyncHint}>
+            ☁️ Sign in to sync Coach progress across devices
+          </p>
+        )}
         {!coachEnabled && (
           <div className={styles.coachMascot}>
             <MascotBubble

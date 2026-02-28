@@ -1,4 +1,8 @@
+import { useEffect, useRef } from "react";
+import type { User } from "firebase/auth";
 import type { Question } from "@/types/quiz";
+import { useAuthContext } from "@/context/AuthContext";
+import { fetchCloudProgress, writeCloudProgress } from "@/lib/coachSync";
 
 const STORAGE_KEY = "js-quiz-coach-v1";
 const QUESTIONS_PER_SESSION = 10;
@@ -45,11 +49,13 @@ function saveStore(store: CoachStoreV1): void {
  *
  * - Incorrect (any mode): reset streak, set interval to 1 day.
  * - Correct (coach mode only): increase streak and interval.
+ * - If a signed-in user is provided, fires a fire-and-forget cloud write.
  */
 export function updateItem(
   questionId: string,
   isCorrect: boolean,
   isCoachMode: boolean,
+  user?: User | null,
 ): void {
   const store = getCoachStore();
   const now = Date.now();
@@ -85,6 +91,43 @@ export function updateItem(
 
   store.items[questionId] = existing;
   saveStore(store);
+
+  // Fire-and-forget cloud write when user is signed in
+  if (user) {
+    writeCloudProgress(user.uid, store.items).catch((err) => {
+      console.error("[coachSync] write failed:", err);
+    });
+  }
+}
+
+/**
+ * React hook that syncs coach progress from Firestore on sign-in.
+ * Cloud wins on conflict: cloud data overwrites localStorage.
+ * On sign-out, localStorage is left untouched.
+ */
+export function useCoachSync(): void {
+  const { user } = useAuthContext();
+  // Track previous user to detect the null → user transition (sign-in event)
+  const prevUserRef = useRef<User | null>(null);
+
+  useEffect(() => {
+    const prevUser = prevUserRef.current;
+    prevUserRef.current = user;
+
+    if (user && prevUser === null) {
+      // Signed in: pull cloud progress and overwrite local if present
+      fetchCloudProgress(user.uid)
+        .then((cloudItems) => {
+          if (cloudItems !== null) {
+            const store: CoachStoreV1 = { version: 1, items: cloudItems };
+            saveStore(store);
+          }
+        })
+        .catch((err) => {
+          console.error("[coachSync] fetch failed:", err);
+        });
+    }
+  }, [user]);
 }
 
 /** Items whose dueAt is in the past (or now). */

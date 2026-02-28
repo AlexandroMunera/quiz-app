@@ -189,6 +189,92 @@
   box-shadow: 0 0 24px color-mix(in srgb, var(--neon-cyan) 50%, transparent);
 }
 
+/* ── Sign-in CTA banner ─────────────── */
+.signInBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.875rem 1.25rem;
+  border-radius: 0.75rem;
+  border: 1px dashed color-mix(in srgb, var(--neon-cyan) 30%, transparent);
+  background: color-mix(in srgb, var(--neon-cyan) 4%, var(--glass-bg));
+  animation: fadeInUp 0.5s ease-out 0.4s both;
+}
+
+.signInBannerContent {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.signInBannerIcon {
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.signInBannerText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.signInBannerTitle {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.signInBannerSub {
+  font-family: "Outfit", sans-serif;
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}
+
+.signInBannerBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in srgb, var(--neon-cyan) 35%, transparent);
+  background: var(--glass-bg);
+  color: var(--foreground);
+  font-family: "Outfit", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+}
+
+.signInBannerBtn:hover {
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--neon-cyan) 25%, transparent);
+  background: color-mix(in srgb, var(--neon-cyan) 6%, var(--glass-bg));
+}
+
+.signInBannerBtn:active {
+  transform: scale(0.97);
+}
+
+.signInBannerBtn svg {
+  flex-shrink: 0;
+}
+
+@media (max-width: 520px) {
+  .signInBanner {
+    flex-direction: column;
+    text-align: center;
+  }
+  .signInBannerContent {
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+}
+
 /* ── Answer Review ──────────────────── */
 .reviewSection {
   display: flex;

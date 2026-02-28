@@ -1,7 +1,8 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { Level, Question, QuizAnswer, QuizResult, QuizState } from "@/types/quiz";
 import { questions as allQuestions } from "@/data/questions";
-import { updateItem as updateCoachItem } from "@/hooks/useCoachStore";
+import { updateItem as updateCoachItem, useCoachSync } from "@/hooks/useCoachStore";
+import { useAuthContext } from "@/context/AuthContext";
 
 const QUESTIONS_PER_QUIZ = 10;
 
@@ -26,6 +27,31 @@ const initialState: QuizState = {
 
 export function useQuiz() {
   const [state, setState] = useState<QuizState>(initialState);
+  const { user } = useAuthContext();
+
+  // Set up cloud sync: on sign-in, overwrite local progress with cloud data
+  useCoachSync();
+
+  // Process coach store writes once when the quiz completes.
+  // Kept outside setState to avoid React StrictMode double-invocation issues.
+  const completionProcessedRef = useRef(false);
+  useEffect(() => {
+    if (!state.isComplete) {
+      completionProcessedRef.current = false;
+      return;
+    }
+    if (completionProcessedRef.current) return;
+    completionProcessedRef.current = true;
+
+    for (const answer of state.answers) {
+      const question = state.questions.find((q) => q.id === answer.questionId);
+      if (!question) continue;
+      const isCorrect = question.correctOptionId === answer.selectedOptionId;
+      if (!isCorrect || state.mode === "coach") {
+        updateCoachItem(question.id, isCorrect, state.mode === "coach", user);
+      }
+    }
+  }, [state.isComplete, state.answers, state.questions, state.mode, user]);
 
   const startQuiz = useCallback((level: Level) => {
     const filtered = allQuestions.filter((q) => q.level === level);
@@ -83,19 +109,6 @@ export function useQuiz() {
     setState((prev) => {
       const nextIndex = prev.currentIndex + 1;
       if (nextIndex >= prev.questions.length) {
-        // Quiz is complete — update coach store
-        for (const answer of prev.answers) {
-          const question = prev.questions.find(
-            (q) => q.id === answer.questionId
-          );
-          if (!question) continue;
-          const isCorrect =
-            question.correctOptionId === answer.selectedOptionId;
-          // Update coach store: incorrect in any mode, correct only in coach mode
-          if (!isCorrect || prev.mode === "coach") {
-            updateCoachItem(question.id, isCorrect, prev.mode === "coach");
-          }
-        }
         return { ...prev, isComplete: true };
       }
       return {
