@@ -298,6 +298,12 @@
   transform: translateX(3px);
 }
 
+/* ── Mascot row ──────────────────────── */
+.mascotRow {
+  padding: 0.5rem 1.5rem 0.75rem;
+  animation: fadeInUp 0.35s ease-out both;
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;

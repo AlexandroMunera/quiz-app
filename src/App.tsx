@@ -4,6 +4,7 @@ import { HomePage } from "@/pages/HomePage";
 import { LevelSelectPage } from "@/pages/LevelSelectPage";
 import { QuizPage } from "@/pages/QuizPage";
 import { ResultsPage } from "@/pages/ResultsPage";
+import { NotFoundPage } from "@/pages/NotFoundPage";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/select-level" element={<LevelSelectPage />} />
         <Route path="/quiz" element={<QuizPage />} />
         <Route path="/results" element={<ResultsPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Layout>
   );

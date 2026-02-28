@@ -1,7 +1,10 @@
+import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { Question } from "@/types/quiz";
 import { TOPIC_LABELS } from "@/types/quiz";
+import { MascotBubble } from "@/components/Mascot/MascotBubble";
+import { getRandomReaction, MILESTONE_REACTIONS } from "@/components/Mascot/mascot.config";
 import styles from "./QuestionCard.module.css";
 
 interface QuestionCardProps {
@@ -13,6 +16,7 @@ interface QuestionCardProps {
   onSelectOption: (optionId: string) => void;
   onNext: () => void;
   isLast: boolean;
+  streak?: number;
 }
 
 function parseQuestionText(text: string) {
@@ -37,9 +41,23 @@ export function QuestionCard({
   onSelectOption,
   onNext,
   isLast,
+  streak = 0,
 }: QuestionCardProps) {
   const { text, code } = parseQuestionText(question.text);
   const isCorrect = selectedOptionId === question.correctOptionId;
+
+  const mascotMessage = useMemo(() => {
+    if (!hasAnswered) {
+      if (questionNumber === 1) return MILESTONE_REACTIONS.firstQuestion;
+      if (questionNumber === Math.ceil(totalQuestions / 2) + 1)
+        return MILESTONE_REACTIONS.halfway;
+      return null;
+    }
+    // After answering — show streak or reaction
+    if (isCorrect && streak >= 5) return MILESTONE_REACTIONS.streak5;
+    if (isCorrect && streak >= 3) return MILESTONE_REACTIONS.streak3;
+    return getRandomReaction(isCorrect);
+  }, [hasAnswered, isCorrect, streak, questionNumber, totalQuestions]);
 
   return (
     <div className={styles.card}>
@@ -130,6 +148,22 @@ export function QuestionCard({
           </div>
         )}
       </div>
+
+      {mascotMessage && (
+        <div className={styles.mascotRow}>
+          <MascotBubble
+            message={mascotMessage}
+            size="sm"
+            variant={
+              !hasAnswered
+                ? "info"
+                : isCorrect
+                  ? "success"
+                  : "error"
+            }
+          />
+        </div>
+      )}
 
       {hasAnswered && (
         <div className={styles.cardFooter}>

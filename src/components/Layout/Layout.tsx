@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { Moon, Sun } from "lucide-react";
 import { useThemeContext } from "@/context/ThemeContext";
+import { MASCOT } from "@/components/Mascot/mascot.config";
 import styles from "./Layout.module.css";
 
 interface LayoutProps {
@@ -32,6 +33,12 @@ export function Layout({ children }: LayoutProps) {
         <div className={styles.headerGlow} />
       </header>
       <main className={styles.main}>{children}</main>
+      <footer className={styles.footer}>
+        <span className={styles.footerText}>
+          Built with ❤️ by Freud — no, not that one. Assisted by {MASCOT.name}{" "}
+          {MASCOT.emoji}
+        </span>
+      </footer>
     </div>
   );
 }

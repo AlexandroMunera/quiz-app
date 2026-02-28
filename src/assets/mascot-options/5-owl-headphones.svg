@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Body -->
+  <ellipse cx="60" cy="72" rx="28" ry="30" fill="#8B6914"/>
+  <!-- Belly -->
+  <ellipse cx="60" cy="78" rx="18" ry="20" fill="#D4A843"/>
+  <!-- Head -->
+  <circle cx="60" cy="38" r="24" fill="#8B6914"/>
+  <!-- Face disc -->
+  <circle cx="60" cy="40" r="18" fill="#D4A843"/>
+  <!-- Ear tufts -->
+  <path d="M36,28 Q30,12 40,22" fill="#8B6914"/>
+  <path d="M84,28 Q90,12 80,22" fill="#8B6914"/>
+  <path d="M38,26 Q34,16 42,24" fill="#D4A843"/>
+  <path d="M82,26 Q86,16 78,24" fill="#D4A843"/>
+  <!-- Eyes (big owl eyes) -->
+  <circle cx="50" cy="38" r="9" fill="white" stroke="#5A4210" stroke-width="2"/>
+  <circle cx="70" cy="38" r="9" fill="white" stroke="#5A4210" stroke-width="2"/>
+  <circle cx="50" cy="38" r="5" fill="#2D2D2D"/>
+  <circle cx="70" cy="38" r="5" fill="#2D2D2D"/>
+  <circle cx="52" cy="36" r="2" fill="white"/>
+  <circle cx="72" cy="36" r="2" fill="white"/>
+  <!-- Beak -->
+  <path d="M56,46 L60,52 L64,46 Z" fill="#FF8C42"/>
+  <!-- Headphones band -->
+  <path d="M32,34 Q32,10 60,8 Q88,10 88,34" stroke="#3A3F5C" stroke-width="4" fill="none"/>
+  <!-- Left headphone -->
+  <rect x="24" y="30" width="12" height="16" rx="6" fill="#3A3F5C"/>
+  <rect x="26" y="33" width="8" height="10" rx="4" fill="#00E5FF" opacity="0.6"/>
+  <!-- Right headphone -->
+  <rect x="84" y="30" width="12" height="16" rx="6" fill="#3A3F5C"/>
+  <rect x="86" y="33" width="8" height="10" rx="4" fill="#FF2D95" opacity="0.6"/>
+  <!-- Wings -->
+  <path d="M32,68 Q16,62 20,78 Q22,86 32,84" fill="#8B6914"/>
+  <path d="M88,68 Q104,62 100,78 Q98,86 88,84" fill="#8B6914"/>
+  <!-- Feet -->
+  <path d="M44,100 L38,110 L44,108 L48,112 L52,108 L56,110 L50,100" fill="#FF8C42"/>
+  <path d="M64,100 L58,110 L64,108 L68,112 L72,108 L76,110 L70,100" fill="#FF8C42"/>
+  <!-- Glasses on headphones (smart look) -->
+  <rect x="42" y="34" width="16" height="12" rx="3" stroke="#3A3F5C" stroke-width="1.5" fill="none"/>
+  <rect x="62" y="34" width="16" height="12" rx="3" stroke="#3A3F5C" stroke-width="1.5" fill="none"/>
+  <line x1="58" y1="40" x2="62" y2="40" stroke="#3A3F5C" stroke-width="1.5"/>
+  <!-- Code symbol on belly -->
+  <text x="48" y="82" font-family="monospace" font-size="10" font-weight="bold" fill="#5A4210" opacity="0.6">&lt;/&gt;</text>
+</svg>

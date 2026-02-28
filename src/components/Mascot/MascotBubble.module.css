@@ -1,0 +1,86 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.animate {
+  animation: bubbleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes bubbleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ── Sizes ───────────────────────── */
+.sm .emoji {
+  font-size: 1.5rem;
+}
+.sm .message {
+  font-size: 0.8rem;
+}
+
+.md .emoji {
+  font-size: 2rem;
+}
+.md .message {
+  font-size: 0.9rem;
+}
+
+.lg .emoji {
+  font-size: 3rem;
+}
+.lg .message {
+  font-size: 1rem;
+}
+
+/* ── Emoji ───────────────────────── */
+.emoji {
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+/* ── Bubble ──────────────────────── */
+.bubble {
+  position: relative;
+  padding: 0.5rem 0.85rem;
+  border-radius: 0.75rem;
+  border-bottom-left-radius: 0.2rem;
+  font-family: "Outfit", sans-serif;
+  font-weight: 500;
+  line-height: 1.4;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+}
+
+/* ── Variants ────────────────────── */
+.default {
+  color: var(--foreground);
+}
+
+.success {
+  border-color: color-mix(in srgb, var(--neon-green) 30%, transparent);
+  background: color-mix(in srgb, var(--neon-green) 8%, var(--glass-bg));
+  color: var(--neon-green);
+}
+
+.error {
+  border-color: color-mix(in srgb, var(--neon-magenta) 30%, transparent);
+  background: color-mix(in srgb, var(--neon-magenta) 8%, var(--glass-bg));
+  color: var(--neon-magenta);
+}
+
+.info {
+  border-color: color-mix(in srgb, var(--neon-cyan) 30%, transparent);
+  background: color-mix(in srgb, var(--neon-cyan) 8%, var(--glass-bg));
+  color: var(--neon-cyan);
+}

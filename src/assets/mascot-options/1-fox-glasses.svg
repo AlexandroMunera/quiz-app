@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Fox face -->
+  <ellipse cx="60" cy="68" rx="36" ry="32" fill="#FF8C42"/>
+  <!-- Inner face / cheeks -->
+  <ellipse cx="60" cy="74" rx="28" ry="24" fill="#FFD4A8"/>
+  <!-- Left ear -->
+  <polygon points="28,42 18,8 48,36" fill="#FF8C42"/>
+  <polygon points="32,40 24,16 46,36" fill="#FFD4A8"/>
+  <!-- Right ear -->
+  <polygon points="92,42 102,8 72,36" fill="#FF8C42"/>
+  <polygon points="88,40 96,16 74,36" fill="#FFD4A8"/>
+  <!-- Glasses frame -->
+  <rect x="32" y="56" width="22" height="18" rx="6" stroke="#2D2D2D" stroke-width="3" fill="none"/>
+  <rect x="66" y="56" width="22" height="18" rx="6" stroke="#2D2D2D" stroke-width="3" fill="none"/>
+  <line x1="54" y1="65" x2="66" y2="65" stroke="#2D2D2D" stroke-width="3"/>
+  <line x1="24" y1="63" x2="32" y2="65" stroke="#2D2D2D" stroke-width="3"/>
+  <line x1="96" y1="63" x2="88" y2="65" stroke="#2D2D2D" stroke-width="3"/>
+  <!-- Eyes behind glasses -->
+  <circle cx="43" cy="65" r="4" fill="#2D2D2D"/>
+  <circle cx="77" cy="65" r="4" fill="#2D2D2D"/>
+  <circle cx="44.5" cy="63.5" r="1.5" fill="white"/>
+  <circle cx="78.5" cy="63.5" r="1.5" fill="white"/>
+  <!-- Nose -->
+  <ellipse cx="60" cy="78" rx="4" ry="3" fill="#2D2D2D"/>
+  <!-- Mouth -->
+  <path d="M54,84 Q60,90 66,84" stroke="#2D2D2D" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- Whiskers -->
+  <line x1="14" y1="72" x2="36" y2="76" stroke="#2D2D2D" stroke-width="1.5" opacity="0.5"/>
+  <line x1="14" y1="80" x2="36" y2="80" stroke="#2D2D2D" stroke-width="1.5" opacity="0.5"/>
+  <line x1="106" y1="72" x2="84" y2="76" stroke="#2D2D2D" stroke-width="1.5" opacity="0.5"/>
+  <line x1="106" y1="80" x2="84" y2="80" stroke="#2D2D2D" stroke-width="1.5" opacity="0.5"/>
+  <!-- Code brackets on glasses -->
+  <text x="37" y="70" font-family="monospace" font-size="8" font-weight="bold" fill="#00E5FF">{ }</text>
+  <text x="70" y="70" font-family="monospace" font-size="8" font-weight="bold" fill="#FF2D95">( )</text>
+</svg>

@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { QuestionCard } from "@/components/QuestionCard/QuestionCard";
+import { MascotLoading } from "@/components/Mascot/MascotLoading";
 import { useQuizContext } from "@/context/QuizContext";
 import { LEVEL_LABELS } from "@/types/quiz";
 import styles from "./QuizPage.module.css";
@@ -25,8 +26,22 @@ export function QuizPage() {
     }
   }, [state.level, state.isComplete, navigate]);
 
+  const currentStreak = useMemo(() => {
+    let streak = 0;
+    for (let i = state.answers.length - 1; i >= 0; i--) {
+      const answer = state.answers[i];
+      const question = state.questions.find((q) => q.id === answer.questionId);
+      if (question?.correctOptionId === answer.selectedOptionId) {
+        streak++;
+      } else {
+        break;
+      }
+    }
+    return streak;
+  }, [state.answers, state.questions]);
+
   if (!currentQuestion || !state.level) {
-    return null;
+    return <MascotLoading message="Loading your quiz…" />;
   }
 
   const progressValue =
@@ -66,6 +81,7 @@ export function QuizPage() {
         }
         onNext={nextQuestion}
         isLast={state.currentIndex === state.questions.length - 1}
+        streak={currentStreak}
       />
     </div>
   );

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Body -->
+  <rect x="32" y="40" width="56" height="52" rx="16" fill="#3A3F5C"/>
+  <!-- Head -->
+  <circle cx="60" cy="42" r="28" fill="#4A5078"/>
+  <!-- Antenna -->
+  <line x1="60" y1="14" x2="60" y2="6" stroke="#00E5FF" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="60" cy="4" r="4" fill="#00E5FF">
+    <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <!-- Screen face -->
+  <rect x="40" y="30" width="40" height="24" rx="6" fill="#0A0E1A"/>
+  <!-- Eyes on screen -->
+  <circle cx="50" cy="40" r="4" fill="#00E5FF"/>
+  <circle cx="70" cy="40" r="4" fill="#00E5FF"/>
+  <circle cx="51" cy="39" r="1.5" fill="white"/>
+  <circle cx="71" cy="39" r="1.5" fill="white"/>
+  <!-- Smile on screen -->
+  <path d="M50,48 Q60,54 70,48" stroke="#00E5FF" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- Arms -->
+  <rect x="18" y="50" width="14" height="8" rx="4" fill="#3A3F5C"/>
+  <rect x="88" y="50" width="14" height="8" rx="4" fill="#3A3F5C"/>
+  <!-- Hand detail -->
+  <circle cx="18" cy="54" r="5" fill="#4A5078"/>
+  <circle cx="102" cy="54" r="5" fill="#4A5078"/>
+  <!-- Belly button / power indicator -->
+  <circle cx="60" cy="68" r="5" fill="#FF2D95">
+    <animate attributeName="opacity" values="0.6;1;0.6" dur="1.5s" repeatCount="indefinite"/>
+  </circle>
+  <!-- Feet -->
+  <rect x="38" y="90" width="16" height="10" rx="5" fill="#4A5078"/>
+  <rect x="66" y="90" width="16" height="10" rx="5" fill="#4A5078"/>
+  <!-- Code on chest -->
+  <text x="44" y="82" font-family="monospace" font-size="7" font-weight="bold" fill="#00E5FF">JS?</text>
+</svg>

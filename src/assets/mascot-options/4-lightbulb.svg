@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Bulb glow -->
+  <circle cx="60" cy="48" r="40" fill="#FFD700" opacity="0.08">
+    <animate attributeName="opacity" values="0.05;0.15;0.05" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  <!-- Bulb body -->
+  <ellipse cx="60" cy="44" rx="30" ry="32" fill="#FFE066"/>
+  <!-- Bulb highlight -->
+  <ellipse cx="50" cy="34" rx="10" ry="14" fill="white" opacity="0.3" transform="rotate(-15, 50, 34)"/>
+  <!-- Face -->
+  <!-- Eyes -->
+  <circle cx="48" cy="44" r="4" fill="#2D2D2D"/>
+  <circle cx="72" cy="44" r="4" fill="#2D2D2D"/>
+  <circle cx="49.5" cy="42.5" r="1.8" fill="white"/>
+  <circle cx="73.5" cy="42.5" r="1.8" fill="white"/>
+  <!-- Happy eyebrows -->
+  <path d="M42,38 Q48,34 54,38" stroke="#CC8800" stroke-width="2" fill="none"/>
+  <path d="M66,38 Q72,34 78,38" stroke="#CC8800" stroke-width="2" fill="none"/>
+  <!-- Big smile -->
+  <path d="M46,54 Q60,64 74,54" stroke="#2D2D2D" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- Cheeks -->
+  <circle cx="40" cy="52" r="5" fill="#FFAA44" opacity="0.4"/>
+  <circle cx="80" cy="52" r="5" fill="#FFAA44" opacity="0.4"/>
+  <!-- Screw base -->
+  <rect x="44" y="74" width="32" height="8" rx="2" fill="#B0B0B0"/>
+  <rect x="46" y="82" width="28" height="4" rx="1" fill="#999"/>
+  <rect x="48" y="86" width="24" height="4" rx="1" fill="#888"/>
+  <rect x="50" y="90" width="20" height="4" rx="1" fill="#777"/>
+  <!-- Screw lines -->
+  <line x1="44" y1="78" x2="76" y2="78" stroke="#999" stroke-width="1"/>
+  <!-- Little arms -->
+  <path d="M30,60 Q24,58 22,52" stroke="#FFE066" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M90,60 Q96,58 98,52" stroke="#FFE066" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <!-- Hand holding code bracket -->
+  <text x="12" y="52" font-family="monospace" font-size="12" font-weight="bold" fill="#00E5FF">{</text>
+  <text x="96" y="52" font-family="monospace" font-size="12" font-weight="bold" fill="#FF2D95">}</text>
+  <!-- Top filament spark -->
+  <line x1="60" y1="12" x2="56" y2="20" stroke="#FFD700" stroke-width="2" stroke-linecap="round"/>
+  <line x1="60" y1="12" x2="64" y2="20" stroke="#FFD700" stroke-width="2" stroke-linecap="round"/>
+  <line x1="60" y1="12" x2="60" y2="20" stroke="#FFD700" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="60" cy="10" r="3" fill="#FFD700">
+    <animate attributeName="r" values="2;4;2" dur="1.5s" repeatCount="indefinite"/>
+  </circle>
+</svg>

@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuizContext } from "@/context/QuizContext";
 import type { Level } from "@/types/quiz";
 import { LEVEL_LABELS, LEVEL_DESCRIPTIONS } from "@/types/quiz";
+import { MascotBubble } from "@/components/Mascot/MascotBubble";
 import styles from "./LevelSelectPage.module.css";
 
 const levels: Level[] = ["junior", "mid", "senior"];
@@ -30,6 +31,11 @@ export function LevelSelectPage() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
+        <MascotBubble
+          message="Pick your challenge! 🎮"
+          size="md"
+          variant="info"
+        />
         <h1 className={styles.title}>Choose Your Level</h1>
         <p className={styles.subtitle}>
           Select the difficulty that matches your experience
