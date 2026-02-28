@@ -1,12 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { useQuizContext } from "@/context/QuizContext";
 import type { Level } from "@/types/quiz";
 import { LEVEL_LABELS, LEVEL_DESCRIPTIONS } from "@/types/quiz";
@@ -14,16 +6,16 @@ import styles from "./LevelSelectPage.module.css";
 
 const levels: Level[] = ["junior", "mid", "senior"];
 
-const levelColors: Record<Level, string> = {
-  junior: "default",
-  mid: "secondary",
-  senior: "destructive",
-};
-
 const levelIcons: Record<Level, string> = {
   junior: "🌱",
   mid: "⚡",
   senior: "🔥",
+};
+
+const levelAccent: Record<Level, string> = {
+  junior: styles.accentCyan,
+  mid: styles.accentAmber,
+  senior: styles.accentMagenta,
 };
 
 export function LevelSelectPage() {
@@ -45,38 +37,27 @@ export function LevelSelectPage() {
       </div>
 
       <div className={styles.levels}>
-        {levels.map((level) => (
-          <Card
+        {levels.map((level, index) => (
+          <div
             key={level}
-            className={styles.levelCard}
+            className={`${styles.levelCard} ${levelAccent[level]}`}
+            style={{ animationDelay: `${index * 0.1}s` }}
             onClick={() => handleSelectLevel(level)}
           >
-            <CardHeader className={styles.levelHeader}>
-              <span className={styles.levelTitle}>
-                {levelIcons[level]} {LEVEL_LABELS[level]}
+            <div className={styles.levelHeader}>
+              <span className={styles.levelIcon}>{levelIcons[level]}</span>
+              <span className={styles.levelTitle}>{LEVEL_LABELS[level]}</span>
+              <span className={styles.levelBadge}>{LEVEL_LABELS[level]}</span>
+            </div>
+            <p className={styles.levelDescription}>
+              {LEVEL_DESCRIPTIONS[level]}
+            </p>
+            <div className={styles.levelAction}>
+              <span className={styles.levelButton}>
+                Start {LEVEL_LABELS[level]} Quiz →
               </span>
-              <Badge
-                variant={
-                  levelColors[level] as
-                    | "default"
-                    | "secondary"
-                    | "destructive"
-                }
-              >
-                {LEVEL_LABELS[level]}
-              </Badge>
-            </CardHeader>
-            <CardContent>
-              <p className={styles.levelDescription}>
-                {LEVEL_DESCRIPTIONS[level]}
-              </p>
-            </CardContent>
-            <CardFooter>
-              <Button className="w-full" variant="outline">
-                Start {LEVEL_LABELS[level]} Quiz
-              </Button>
-            </CardFooter>
-          </Card>
+            </div>
+          </div>
         ))}
       </div>
     </div>

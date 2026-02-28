@@ -45,7 +45,7 @@ export interface QuizResult {
 
 export const LEVEL_LABELS: Record<Level, string> = {
   junior: "Junior",
-  mid: "Mid-Level",
+  mid: "Mid",
   senior: "Senior",
 };
 

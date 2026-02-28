@@ -1,7 +1,5 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
 import { QuestionCard } from "@/components/QuestionCard/QuestionCard";
 import { useQuizContext } from "@/context/QuizContext";
 import { LEVEL_LABELS } from "@/types/quiz";
@@ -40,14 +38,21 @@ export function QuizPage() {
     <div className={styles.container}>
       <div className={styles.progressSection}>
         <div className={styles.progressInfo}>
-          <Badge variant="outline">
+          <span className={styles.levelBadge}>
             {LEVEL_LABELS[state.level]}
-          </Badge>
-          <span>
-            {state.currentIndex + 1} / {state.questions.length}
+          </span>
+          <span className={styles.counter}>
+            {state.currentIndex + 1}
+            <span className={styles.counterSlash}>/</span>
+            {state.questions.length}
           </span>
         </div>
-        <Progress value={progressValue} />
+        <div className={styles.progressTrack}>
+          <div
+            className={styles.progressFill}
+            style={{ width: `${progressValue}%` }}
+          />
+        </div>
       </div>
 
       <QuestionCard

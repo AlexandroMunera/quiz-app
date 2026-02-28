@@ -1,15 +1,7 @@
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
 import type { Question } from "@/types/quiz";
 import { TOPIC_LABELS } from "@/types/quiz";
-import { Badge } from "@/components/ui/badge";
 import styles from "./QuestionCard.module.css";
 
 interface QuestionCardProps {
@@ -50,42 +42,54 @@ export function QuestionCard({
   const isCorrect = selectedOptionId === question.correctOptionId;
 
   return (
-    <Card className={styles.card}>
-      <CardHeader>
-        <div className="flex items-center justify-between">
+    <div className={styles.card}>
+      <div className={styles.cardHeader}>
+        <div className={styles.headerRow}>
           <span className={styles.questionNumber}>
-            Question {questionNumber} of {totalQuestions}
+            Q{questionNumber}
+            <span className={styles.questionTotal}>/{totalQuestions}</span>
           </span>
-          <Badge variant="outline">{TOPIC_LABELS[question.topic]}</Badge>
+          <span className={styles.topicBadge}>
+            {TOPIC_LABELS[question.topic]}
+          </span>
         </div>
         <div className={styles.questionText}>
           {text}
-          {code && <pre className={styles.codeBlock}>{code}</pre>}
+          {code && (
+            <div className={styles.codeWrapper}>
+              <div className={styles.codeHeader}>
+                <span className={styles.codeDot} />
+                <span className={styles.codeDot} />
+                <span className={styles.codeDot} />
+              </div>
+              <pre className={styles.codeBlock}>{code}</pre>
+            </div>
+          )}
         </div>
-      </CardHeader>
+      </div>
 
-      <CardContent>
+      <div className={styles.cardContent}>
         <div className={styles.options}>
-          {question.options.map((option) => {
-            let optionStyle = styles.optionLabel;
+          {question.options.map((option, index) => {
+            let optionClass = styles.optionLabel;
 
             if (hasAnswered) {
               if (option.id === question.correctOptionId) {
-                optionStyle = cn(styles.optionLabel, styles.optionCorrect);
+                optionClass = cn(styles.optionLabel, styles.optionCorrect);
               } else if (
                 option.id === selectedOptionId &&
                 option.id !== question.correctOptionId
               ) {
-                optionStyle = cn(styles.optionLabel, styles.optionIncorrect);
+                optionClass = cn(styles.optionLabel, styles.optionIncorrect);
               } else {
-                optionStyle = cn(styles.optionLabel, styles.optionDisabled);
+                optionClass = cn(styles.optionLabel, styles.optionDisabled);
               }
             }
 
             return (
               <label
                 key={option.id}
-                className={optionStyle}
+                className={optionClass}
                 data-state={selectedOptionId === option.id ? "checked" : ""}
                 onClick={() => !hasAnswered && onSelectOption(option.id)}
               >
@@ -98,43 +102,43 @@ export function QuestionCard({
                   disabled={hasAnswered}
                   className="sr-only"
                 />
-                <span
-                  className={cn(
-                    "flex h-4 w-4 shrink-0 items-center justify-center rounded-full border",
-                    selectedOptionId === option.id
-                      ? "border-primary bg-primary"
-                      : "border-muted-foreground"
-                  )}
-                >
-                  {selectedOptionId === option.id && (
-                    <span className="h-2 w-2 rounded-full bg-white" />
-                  )}
+                <span className={styles.optionIndex}>
+                  {String.fromCharCode(65 + index)}
                 </span>
-                <span>{option.text}</span>
+                <span className={styles.optionText}>{option.text}</span>
               </label>
             );
           })}
         </div>
 
         {hasAnswered && (
-          <Alert
-            className={styles.explanation}
-            variant={isCorrect ? "default" : "destructive"}
+          <div
+            className={cn(
+              styles.explanation,
+              isCorrect ? styles.explanationCorrect : styles.explanationIncorrect
+            )}
           >
-            <AlertTitle>{isCorrect ? "✅ Correct!" : "❌ Incorrect"}</AlertTitle>
-            <AlertDescription>{question.explanation}</AlertDescription>
-          </Alert>
+            <div className={styles.explanationHeader}>
+              <span className={styles.explanationIcon}>
+                {isCorrect ? "✓" : "✗"}
+              </span>
+              <span className={styles.explanationTitle}>
+                {isCorrect ? "Correct!" : "Incorrect"}
+              </span>
+            </div>
+            <p className={styles.explanationText}>{question.explanation}</p>
+          </div>
         )}
-      </CardContent>
+      </div>
 
-      <CardFooter className={styles.footer}>
-        <div />
-        {hasAnswered && (
-          <Button onClick={onNext}>
-            {isLast ? "See Results" : "Next Question →"}
+      {hasAnswered && (
+        <div className={styles.cardFooter}>
+          <Button onClick={onNext} className={styles.nextButton}>
+            {isLast ? "See Results" : "Next Question"}
+            <span className={styles.nextArrow}>→</span>
           </Button>
-        )}
-      </CardFooter>
-    </Card>
+        </div>
+      )}
+    </div>
   );
 }

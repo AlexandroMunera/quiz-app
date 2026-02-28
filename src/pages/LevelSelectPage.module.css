@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2rem;
+  gap: 2.5rem;
   padding-top: 2rem;
 }
 
@@ -10,18 +10,22 @@
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  animation: fadeInUp 0.5s ease-out both;
 }
 
 .title {
+  font-family: "JetBrains Mono", monospace;
   font-size: 2rem;
-  font-weight: 700;
-  color: hsl(var(--foreground));
+  font-weight: 800;
+  color: var(--foreground);
+  letter-spacing: -0.03em;
 }
 
 .subtitle {
-  font-size: 1rem;
-  color: hsl(var(--muted-foreground));
+  font-family: "Outfit", sans-serif;
+  font-size: 1.05rem;
+  color: var(--muted-foreground);
 }
 
 .levels {
@@ -29,7 +33,7 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
   width: 100%;
-  max-width: 720px;
+  max-width: 780px;
 }
 
 @media (max-width: 640px) {
@@ -40,31 +44,146 @@
 
 .levelCard {
   cursor: pointer;
-  transition: border-color 0.2s, box-shadow 0.2s;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 1rem;
+  padding: 1.75rem 1.5rem;
+  border-radius: 1rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-left: 4px solid transparent;
+  transition: all 0.3s ease;
+  animation: fadeInUp 0.5s ease-out both;
 }
 
 .levelCard:hover {
-  border-color: hsl(var(--primary));
-  box-shadow: 0 0 0 1px hsl(var(--primary));
+  transform: translateY(-4px);
 }
 
+/* ── Per-level accent colors ────────────── */
+.accentCyan {
+  border-left-color: var(--neon-cyan);
+}
+.accentCyan:hover {
+  box-shadow: var(--glow-cyan);
+  border-color: color-mix(in srgb, var(--neon-cyan) 30%, transparent);
+  border-left-color: var(--neon-cyan);
+}
+.accentCyan .levelBadge {
+  background: color-mix(in srgb, var(--neon-cyan) 15%, transparent);
+  color: var(--neon-cyan);
+}
+.accentCyan .levelButton {
+  color: var(--neon-cyan);
+  border-color: color-mix(in srgb, var(--neon-cyan) 35%, transparent);
+}
+.accentCyan .levelButton:hover {
+  background: color-mix(in srgb, var(--neon-cyan) 12%, transparent);
+}
+
+.accentAmber {
+  border-left-color: var(--neon-amber);
+}
+.accentAmber:hover {
+  box-shadow: var(--glow-amber);
+  border-color: color-mix(in srgb, var(--neon-amber) 30%, transparent);
+  border-left-color: var(--neon-amber);
+}
+.accentAmber .levelBadge {
+  background: color-mix(in srgb, var(--neon-amber) 15%, transparent);
+  color: var(--neon-amber);
+}
+.accentAmber .levelButton {
+  color: var(--neon-amber);
+  border-color: color-mix(in srgb, var(--neon-amber) 35%, transparent);
+}
+.accentAmber .levelButton:hover {
+  background: color-mix(in srgb, var(--neon-amber) 12%, transparent);
+}
+
+.accentMagenta {
+  border-left-color: var(--neon-magenta);
+}
+.accentMagenta:hover {
+  box-shadow: var(--glow-magenta);
+  border-color: color-mix(in srgb, var(--neon-magenta) 30%, transparent);
+  border-left-color: var(--neon-magenta);
+}
+.accentMagenta .levelBadge {
+  background: color-mix(in srgb, var(--neon-magenta) 15%, transparent);
+  color: var(--neon-magenta);
+}
+.accentMagenta .levelButton {
+  color: var(--neon-magenta);
+  border-color: color-mix(in srgb, var(--neon-magenta) 35%, transparent);
+}
+.accentMagenta .levelButton:hover {
+  background: color-mix(in srgb, var(--neon-magenta) 12%, transparent);
+}
+
+/* ── Card inner elements ────────────────── */
 .levelHeader {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.levelIcon {
+  font-size: 1.5rem;
 }
 
 .levelTitle {
-  font-size: 1.25rem;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--foreground);
+  flex: 1;
+}
+
+.levelBadge {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.7rem;
   font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .levelDescription {
+  font-family: "Outfit", sans-serif;
   font-size: 0.875rem;
-  color: hsl(var(--muted-foreground));
-  line-height: 1.5;
-  margin-top: 0.5rem;
+  color: var(--muted-foreground);
+  line-height: 1.6;
+}
+
+.levelAction {
+  margin-top: 0.25rem;
+}
+
+.levelButton {
+  display: block;
+  width: 100%;
+  text-align: center;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.6rem 1.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid;
+  transition: all 0.25s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
