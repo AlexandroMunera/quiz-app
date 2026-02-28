@@ -220,10 +220,13 @@
 }
 
 .coachCardDisabled {
-  cursor: not-allowed;
-  opacity: 0.55;
+  cursor: default;
+    border-style: dashed;
+    border-left-width: 4px;
+    border-left-style: dashed;
   border-left-color: var(--muted-foreground);
-  border-color: var(--glass-border);
+  border-color: color-mix(in srgb, var(--muted-foreground) 35%, transparent);
+    background: color-mix(in srgb, var(--glass-bg) 60%, transparent);
 }
 
 .coachCardDisabled:hover {
@@ -231,6 +234,20 @@
   box-shadow: none;
 }
 
+.coachDisabledBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--neon-amber) 12%, transparent);
+  color: var(--neon-amber);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
 .coachHeader {
   display: flex;
   align-items: center;

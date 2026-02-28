@@ -1,0 +1,133 @@
+/* ── CodeViewer — editor-style code block ──────── */
+
+.wrapper {
+  margin-top: 0.75rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--neon-cyan) 20%, transparent);
+  box-shadow: var(--glow-cyan);
+}
+
+.titleBar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: color-mix(in srgb, var(--muted) 60%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--neon-cyan) 10%, transparent);
+  user-select: none;
+}
+
+.dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.dot[data-color="red"]    { background: #ff5f56; }
+.dot[data-color="yellow"] { background: #ffbd2e; }
+.dot[data-color="green"]  { background: #27c93f; }
+
+.filename {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.72rem;
+  color: var(--muted-foreground);
+  letter-spacing: 0.02em;
+  flex: 1;
+}
+
+/* ── Copy button ────────────────────────────────── */
+
+.copyButton {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--neon-cyan) 25%, transparent);
+  border-radius: 0.3rem;
+  background: color-mix(in srgb, var(--muted) 40%, transparent);
+  color: var(--muted-foreground);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.68rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.copyButton:hover {
+  background: color-mix(in srgb, var(--neon-cyan) 15%, transparent);
+  color: var(--neon-cyan);
+  border-color: color-mix(in srgb, var(--neon-cyan) 45%, transparent);
+}
+
+.copyLabel {
+  user-select: none;
+}
+
+/* ── Code area ──────────────────────────────────── */
+
+.pre {
+  margin: 0;
+  padding: 0.75rem 0;
+  overflow-x: auto;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.82rem;
+  line-height: 1.7;
+  tab-size: 2;
+  white-space: pre;
+  /* prism-react-renderer sets background via style attr;
+     override so it inherits from our themed container */
+  background: color-mix(in srgb, var(--muted) 35%, transparent) !important;
+}
+
+.code {
+  display: table;
+  min-width: 100%;
+}
+
+.line {
+  display: table-row;
+}
+
+.lineNumber {
+  display: table-cell;
+  text-align: right;
+  padding-right: 1rem;
+  padding-left: 0.75rem;
+  user-select: none;
+  color: var(--muted-foreground);
+  opacity: 0.45;
+  font-size: 0.75rem;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.lineContent {
+  display: table-cell;
+  padding-right: 1rem;
+  white-space: pre;
+}
+
+/* ── Responsive tweaks ─────────────────────────── */
+
+@media (max-width: 480px) {
+  .pre {
+    font-size: 0.75rem;
+  }
+
+  .lineNumber {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    font-size: 0.68rem;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+  }
+}

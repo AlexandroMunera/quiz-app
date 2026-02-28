@@ -17,6 +17,7 @@ Currently, when a quiz question includes a code snippet, it is rendered as plain
   - An optional filename or language label (e.g., `index.js`, `TypeScript`).
 - Use the **JetBrains Mono** font (already loaded) for code text.
 - Apply the app's existing neon/glassmorphism theme tokens for the container styling.
+- Copy-to-clipboard button (can be added later).
 
 ### Syntax Highlighting
 - Add syntax highlighting appropriate for JavaScript/TypeScript code.
@@ -42,6 +43,5 @@ Currently, when a quiz question includes a code snippet, it is rendered as plain
 - Integrate with the existing question rendering logic — detect when a question's code field is present and render it through `CodeViewer`.
 
 ## Out of Scope
-- Copy-to-clipboard button (can be added later).
 - Editable code / live execution.
 - Multi-file tabs.

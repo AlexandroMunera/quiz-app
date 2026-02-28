@@ -5,6 +5,7 @@ import type { Question } from "@/types/quiz";
 import { TOPIC_LABELS } from "@/types/quiz";
 import { MascotBubble } from "@/components/Mascot/MascotBubble";
 import { getRandomReaction, MILESTONE_REACTIONS } from "@/components/Mascot/mascot.config";
+import { CodeViewer } from "@/components/CodeViewer/CodeViewer";
 import styles from "./QuestionCard.module.css";
 
 interface QuestionCardProps {
@@ -21,16 +22,17 @@ interface QuestionCardProps {
 }
 
 function parseQuestionText(text: string) {
-  const codeBlockRegex = /```[\w]*\n([\s\S]*?)```/;
+  const codeBlockRegex = /```(\w*)\n([\s\S]*?)```/;
   const match = text.match(codeBlockRegex);
 
   if (match) {
     const before = text.substring(0, match.index).trim();
-    const code = match[1].trim();
-    return { text: before, code };
+    const language = match[1] || "js";
+    const code = match[2].trim();
+    return { text: before, code, language };
   }
 
-  return { text, code: null };
+  return { text, code: null, language: "js" };
 }
 
 export function QuestionCard({
@@ -45,7 +47,7 @@ export function QuestionCard({
   streak = 0,
   highlightedIndex = null,
 }: QuestionCardProps) {
-  const { text, code } = parseQuestionText(question.text);
+  const { text, code, language } = parseQuestionText(question.text);
   const isCorrect = selectedOptionId === question.correctOptionId;
 
   const mascotMessage = useMemo(() => {
@@ -75,16 +77,7 @@ export function QuestionCard({
         </div>
         <div className={styles.questionText}>
           {text}
-          {code && (
-            <div className={styles.codeWrapper}>
-              <div className={styles.codeHeader}>
-                <span className={styles.codeDot} />
-                <span className={styles.codeDot} />
-                <span className={styles.codeDot} />
-              </div>
-              <pre className={styles.codeBlock}>{code}</pre>
-            </div>
-          )}
+          {code && <CodeViewer code={code} language={language} />}
         </div>
       </div>
 

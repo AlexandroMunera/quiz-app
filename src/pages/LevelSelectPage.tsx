@@ -125,21 +125,23 @@ export function LevelSelectPage() {
         <div className={styles.coachHeader}>
           <span className={styles.coachIcon}>🧠</span>
           <span className={styles.coachTitle}>Coach Mode</span>
-          {coachEnabled && (
+          {coachEnabled ? (
             <span className={styles.coachBadge}>
               {coachDue > 0 ? `${coachDue} due` : `${coachTotal} to review`}
             </span>
+          ) : (
+            <span className={styles.coachDisabledBadge}>🔒 Locked</span>
           )}
         </div>
         <p className={styles.coachDescription}>
           {coachEnabled
             ? "Practice questions you've missed before. Powered by spaced repetition."
-            : "No questions to review — keep quizzing!"}
+            : "Complete a quiz and miss a question to unlock Coach Mode."}
         </p>
         {!coachEnabled && (
           <div className={styles.coachMascot}>
             <MascotBubble
-              message="No questions to review — keep quizzing!"
+              message="Take a quiz first — I'll coach you on the tricky ones! 💪"
               size="sm"
               variant="info"
             />
