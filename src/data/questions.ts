@@ -1,6 +1,11 @@
 import type { Question } from "@/types/quiz";
+import { cssQuestions } from "@/data/cssQuestions";
+import { devopsQuestions } from "@/data/devopsQuestions";
+import { reactQuestions } from "@/data/reactQuestions";
+import { typescriptQuestions } from "@/data/typescriptQuestions";
+import { webFundamentalsQuestions } from "@/data/webFundamentalsQuestions";
 
-export const questions: Question[] = [
+const javascriptQuestions: Array<Omit<Question, "category">> = [
   // ─── JUNIOR ────────────────────────────────────────────────
   {
     id: "j1",
@@ -537,4 +542,16 @@ export const questions: Question[] = [
     explanation:
       "`Foo()` called without `new` returns `this` which is the global object (or `undefined` in strict mode). `new Foo()` creates a new object and returns it. They are different objects, so `a === b` is `false`.",
   },
+];
+
+export const questions: Question[] = [
+  ...javascriptQuestions.map((question) => ({
+    ...question,
+    category: "javascript" as const,
+  })),
+  ...devopsQuestions,
+  ...webFundamentalsQuestions,
+  ...cssQuestions,
+  ...typescriptQuestions,
+  ...reactQuestions,
 ];

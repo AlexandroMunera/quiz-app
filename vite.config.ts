@@ -7,6 +7,29 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   base: "/quiz-app/",
   plugins: [react(), tailwindcss()],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes("node_modules")) return;
+
+          if (id.includes("react") || id.includes("scheduler")) {
+            return "react-vendor";
+          }
+
+          if (id.includes("firebase")) {
+            return "firebase-vendor";
+          }
+
+          if (id.includes("canvas-confetti")) {
+            return "effects-vendor";
+          }
+
+          return "vendor";
+        },
+      },
+    },
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

@@ -1,12 +1,20 @@
-import { useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useQuizContext } from "@/context/QuizContext";
 import { useAuthContext } from "@/context/AuthContext";
-import type { Level } from "@/types/quiz";
-import { LEVEL_LABELS, LEVEL_DESCRIPTIONS } from "@/types/quiz";
+import type { Category, Level } from "@/types/quiz";
+import {
+  CATEGORY_DESCRIPTIONS,
+  CATEGORY_ICONS,
+  CATEGORY_LABELS,
+  LEVEL_DESCRIPTIONS,
+  LEVEL_LABELS,
+} from "@/types/quiz";
 import { MascotBubble } from "@/components/Mascot/MascotBubble";
 import { questions as allQuestions } from "@/data/questions";
 import {
+  getCoachQueueCountForCategory,
+  getDueCountForCategory,
   getCoachQueueCount,
   getDueCount,
   selectCoachQuestions,
@@ -16,6 +24,14 @@ import { cn } from "@/lib/utils";
 import styles from "./LevelSelectPage.module.css";
 
 const levels: Level[] = ["junior", "mid", "senior"];
+const categories: Category[] = [
+  "javascript",
+  "devops",
+  "web-fundamentals",
+  "css",
+  "typescript",
+  "react",
+];
 
 const levelIcons: Record<Level, string> = {
   junior: "🌱",
@@ -31,24 +47,34 @@ const levelAccent: Record<Level, string> = {
 
 export function LevelSelectPage() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { startQuiz, startCoachMode } = useQuizContext();
   const { user } = useAuthContext();
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [navSection, setNavSection] = useState<"categories" | "actions">("categories");
 
-  const coachTotal = getCoachQueueCount();
-  const coachDue = getDueCount();
+  const coachTotal = selectedCategory
+    ? getCoachQueueCountForCategory(allQuestions, selectedCategory)
+    : getCoachQueueCount();
+  const globalCoachTotal = getCoachQueueCount();
+  const coachDue = selectedCategory
+    ? getDueCountForCategory(allQuestions, selectedCategory)
+    : getDueCount();
   const coachEnabled = coachTotal > 0;
+  const showingPriorityReviewHint = coachEnabled && coachDue === 0;
 
   // Total items: 3 level cards + 1 coach CTA
   const totalItems = levels.length + 1;
 
   function handleSelectLevel(level: Level) {
-    startQuiz(level);
+    if (!selectedCategory) return;
+    startQuiz(level, selectedCategory);
     navigate("/quiz");
   }
 
   function handleStartCoach() {
     if (!coachEnabled) return;
-    const selected = selectCoachQuestions(allQuestions);
+    const selected = selectCoachQuestions(allQuestions, selectedCategory ?? undefined);
     if (selected.length === 0) return;
     startCoachMode(selected);
     navigate("/quiz");
@@ -63,14 +89,94 @@ export function LevelSelectPage() {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [coachEnabled],
+    [coachEnabled, selectedCategory],
   );
 
-  const { highlightedIndex } = useKeyboardNav({
+  const {
+    highlightedIndex,
+    setHighlightedIndex,
+  } = useKeyboardNav({
     itemCount: totalItems,
     onSelect: handleKeySelect,
-    enabled: true,
+    enabled: navSection === "actions",
   });
+
+  const {
+    highlightedIndex: categoryHighlightedIndex,
+    setHighlightedIndex: setCategoryHighlightedIndex,
+  } = useKeyboardNav({
+    itemCount: categories.length,
+    onSelect: (index) => {
+      const category = categories[index];
+      if (!category) return;
+      applySelectedCategory(category);
+    },
+    enabled: navSection === "categories",
+  });
+
+  function applySelectedCategory(category: Category) {
+    setSelectedCategory(category);
+    setNavSection("actions");
+    setHighlightedIndex(0);
+
+    const next = new URLSearchParams(searchParams);
+    next.set("category", category);
+    next.set("section", "actions");
+    setSearchParams(next, { replace: true });
+  }
+
+  useEffect(() => {
+    const urlCategory = searchParams.get("category");
+    if (!urlCategory) return;
+    if (!categories.includes(urlCategory as Category)) return;
+
+    const normalized = urlCategory as Category;
+    setSelectedCategory(normalized);
+  }, [searchParams]);
+
+  useEffect(() => {
+    const section = searchParams.get("section");
+    if (section !== "categories" && section !== "actions") return;
+    if (section === navSection) return;
+    setNavSection(section);
+  }, [searchParams, navSection]);
+
+  useEffect(() => {
+    const current = searchParams.get("section");
+    if (current === navSection) return;
+    const next = new URLSearchParams(searchParams);
+    next.set("section", navSection);
+    setSearchParams(next, { replace: true });
+  }, [navSection, searchParams, setSearchParams]);
+
+  useEffect(() => {
+    if (navSection !== "categories") return;
+    if (categoryHighlightedIndex !== null) return;
+    setCategoryHighlightedIndex(0);
+  }, [navSection, categoryHighlightedIndex, setCategoryHighlightedIndex]);
+
+  useEffect(() => {
+    if (navSection !== "actions") return;
+    if (highlightedIndex !== null) return;
+    setHighlightedIndex(0);
+  }, [navSection, highlightedIndex, setHighlightedIndex]);
+
+  useEffect(() => {
+    function handleTabSwitch(e: KeyboardEvent) {
+      if (e.key !== "Tab") return;
+      e.preventDefault();
+      setNavSection((prev) => {
+        const nextSection = prev === "categories" ? "actions" : "categories";
+        const next = new URLSearchParams(searchParams);
+        next.set("section", nextSection);
+        setSearchParams(next, { replace: true });
+        return nextSection;
+      });
+    }
+
+    window.addEventListener("keydown", handleTabSwitch);
+    return () => window.removeEventListener("keydown", handleTabSwitch);
+  }, [searchParams, setSearchParams]);
 
   return (
     <div className={styles.container}>
@@ -82,8 +188,42 @@ export function LevelSelectPage() {
         />
         <h1 className={styles.title}>Choose Your Level</h1>
         <p className={styles.subtitle}>
-          Select the difficulty that matches your experience
+          Pick a topic first, then select the difficulty
         </p>
+      </div>
+
+      <div className={styles.categories}>
+        {categories.map((category, index) => {
+          const categoryIcon = CATEGORY_ICONS[category];
+
+          return (
+            <button
+              key={category}
+              type="button"
+              className={cn(
+                styles.categoryCard,
+                selectedCategory === category && styles.categoryCardSelected,
+                navSection === "categories" &&
+                  categoryHighlightedIndex === index &&
+                  styles.categoryCardHighlighted,
+              )}
+              onClick={() => applySelectedCategory(category)}
+            >
+              <div className={styles.categoryHeader}>
+                <span
+                  className={styles.categoryIcon}
+                  style={{ color: `#${categoryIcon.hex}` }}
+                >
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+                    <path d={categoryIcon.path} />
+                  </svg>
+                </span>
+                <span className={styles.categoryTitle}>{CATEGORY_LABELS[category]}</span>
+              </div>
+              <p className={styles.categoryDescription}>{CATEGORY_DESCRIPTIONS[category]}</p>
+            </button>
+          );
+        })}
       </div>
 
       <div className={styles.levels}>
@@ -93,6 +233,7 @@ export function LevelSelectPage() {
             className={cn(
               styles.levelCard,
               levelAccent[level],
+              !selectedCategory && styles.levelCardDisabled,
               highlightedIndex === index && styles.levelCardHighlighted,
             )}
             style={{ animationDelay: `${index * 0.1}s` }}
@@ -108,7 +249,9 @@ export function LevelSelectPage() {
             </p>
             <div className={styles.levelAction}>
               <span className={styles.levelButton}>
-                Start {LEVEL_LABELS[level]} Quiz →
+                {selectedCategory
+                  ? `Start ${LEVEL_LABELS[level]} Quiz →`
+                  : "Select a topic first"}
               </span>
             </div>
           </div>
@@ -144,9 +287,21 @@ export function LevelSelectPage() {
           )}
         </div>
         <p className={styles.coachDescription}>
-          {coachEnabled
-            ? "Practice questions you've missed before. Powered by spaced repetition."
+          {selectedCategory && !coachEnabled && globalCoachTotal > 0
+            ? `No ${CATEGORY_LABELS[selectedCategory]} coach items yet. Complete a ${CATEGORY_LABELS[selectedCategory]} quiz and miss at least one question to populate this queue.`
+            : coachEnabled
+            ? selectedCategory
+              ? `Practice missed ${CATEGORY_LABELS[selectedCategory]} questions with spaced repetition.`
+              : "Practice questions you've missed before. Powered by spaced repetition."
             : "Complete a quiz and miss a question to unlock Coach Mode."}
+        </p>
+        {showingPriorityReviewHint && (
+          <p className={styles.coachSyncHint}>
+            No due now, showing priority review items.
+          </p>
+        )}
+        <p className={styles.coachSyncHint}>
+          Keyboard: Tab switches sections, arrows navigate, Enter selects.
         </p>
         {!user && (
           <p className={styles.coachSyncHint}>

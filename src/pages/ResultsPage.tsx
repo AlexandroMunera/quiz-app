@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useQuizContext } from "@/context/QuizContext";
 import { useAuthContext } from "@/context/AuthContext";
-import { LEVEL_LABELS, TOPIC_LABELS } from "@/types/quiz";
+import { CATEGORY_LABELS, LEVEL_LABELS, TOPIC_LABELS } from "@/types/quiz";
 import { cn } from "@/lib/utils";
 import { MascotBubble } from "@/components/Mascot/MascotBubble";
 import { getScoreReaction } from "@/components/Mascot/mascot.config";
@@ -92,6 +92,7 @@ export function ResultsPage() {
       level={state.level}
       coachSummary={coachSummary}
       actions={actions}
+      category={state.category}
       isGuest={!user}
       signInWithGoogle={signInWithGoogle}
     />
@@ -109,6 +110,7 @@ function ResultsContent({
   level,
   coachSummary,
   actions,
+  category,
   isGuest,
   signInWithGoogle,
 }: {
@@ -121,6 +123,7 @@ function ResultsContent({
   level: import("@/types/quiz").Level | null;
   coachSummary: { mastered: number; improving: number; needsPractice: number } | null;
   actions: Array<{ label: string; primary: boolean; handler: () => void }>;
+  category: import("@/types/quiz").Category | null;
   isGuest: boolean;
   signInWithGoogle: () => Promise<void>;
 }) {
@@ -217,6 +220,7 @@ function ResultsContent({
 
         {!isCoach && level && (
           <span className={styles.levelBadge}>
+            {category ? `${CATEGORY_LABELS[category]} · ` : ""}
             {LEVEL_LABELS[level]} Level
           </span>
         )}

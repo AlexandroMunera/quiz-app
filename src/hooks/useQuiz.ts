@@ -1,5 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { Level, Question, QuizAnswer, QuizResult, QuizState } from "@/types/quiz";
+import type {
+  Category,
+  Level,
+  Question,
+  QuizAnswer,
+  QuizResult,
+  QuizState,
+} from "@/types/quiz";
 import { questions as allQuestions } from "@/data/questions";
 import { updateItem as updateCoachItem, useCoachSync } from "@/hooks/useCoachStore";
 import { useAuthContext } from "@/context/AuthContext";
@@ -17,6 +24,7 @@ function shuffleArray<T>(array: T[]): T[] {
 
 const initialState: QuizState = {
   mode: "standard",
+  category: null,
   level: null,
   questions: [],
   currentIndex: 0,
@@ -53,8 +61,10 @@ export function useQuiz() {
     }
   }, [state.isComplete, state.answers, state.questions, state.mode, user]);
 
-  const startQuiz = useCallback((level: Level) => {
-    const filtered = allQuestions.filter((q) => q.level === level);
+  const startQuiz = useCallback((level: Level, category: Category) => {
+    const filtered = allQuestions.filter(
+      (q) => q.level === level && q.category === category
+    );
     const shuffled = shuffleArray(filtered);
     const selected = shuffled.slice(0, QUESTIONS_PER_QUIZ).map((q) => ({
       ...q,
@@ -63,6 +73,7 @@ export function useQuiz() {
 
     setState({
       mode: "standard",
+      category,
       level,
       questions: selected,
       currentIndex: 0,
@@ -80,6 +91,7 @@ export function useQuiz() {
 
     setState({
       mode: "coach",
+      category: null,
       level: null,
       questions: prepared,
       currentIndex: 0,

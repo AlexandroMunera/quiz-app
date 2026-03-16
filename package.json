@@ -1,11 +1,12 @@
 {
   "name": "quiz-app",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "validate:questions": "tsx scripts/validate-questions.ts",
+    "build": "pnpm validate:questions && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -20,6 +21,7 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.13.1",
+    "simple-icons": "^16.12.0",
     "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {
@@ -36,6 +38,7 @@
     "globals": "^16.5.0",
     "shadcn": "^3.8.5",
     "tailwindcss": "^4.2.1",
+    "tsx": "^4.21.0",
     "tw-animate-css": "^1.4.0",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.48.0",

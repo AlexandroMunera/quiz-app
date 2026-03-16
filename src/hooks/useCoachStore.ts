@@ -1,8 +1,9 @@
 import { useEffect, useRef } from "react";
 import type { User } from "firebase/auth";
-import type { Question } from "@/types/quiz";
+import type { Category, Question } from "@/types/quiz";
 import { useAuthContext } from "@/context/AuthContext";
 import { fetchCloudProgress, writeCloudProgress } from "@/lib/coachSync";
+import { questions as allQuestions } from "@/data/questions";
 
 const STORAGE_KEY = "js-quiz-coach-v1";
 const QUESTIONS_PER_SESSION = 10;
@@ -26,6 +27,56 @@ function emptyStore(): CoachStoreV1 {
   return { version: 1, items: {} };
 }
 
+function mergeCoachItem(current: CoachItem | undefined, incoming: CoachItem): CoachItem {
+  if (!current) return incoming;
+
+  return {
+    seenCount: Math.max(current.seenCount, incoming.seenCount),
+    wrongCount: Math.max(current.wrongCount, incoming.wrongCount),
+    correctStreak: Math.max(current.correctStreak, incoming.correctStreak),
+    lastAnsweredAt: Math.max(current.lastAnsweredAt, incoming.lastAnsweredAt),
+    dueAt: Math.max(current.dueAt, incoming.dueAt),
+    intervalDays: Math.max(current.intervalDays, incoming.intervalDays),
+  };
+}
+
+function normalizeQuestionId(id: string, validIds: Set<string>): string | null {
+  if (validIds.has(id)) return id;
+
+  // Legacy-prefixed JS IDs from earlier plan drafts (js-j1, js-m1, js-s10)
+  if (id.startsWith("js-")) {
+    const trimmed = id.slice(3);
+    if (validIds.has(trimmed)) return trimmed;
+  }
+
+  return null;
+}
+
+function migrateStoreItems(items: Record<string, CoachItem>): {
+  items: Record<string, CoachItem>;
+  changed: boolean;
+} {
+  const validIds = new Set(allQuestions.map((question) => question.id));
+  const migratedItems: Record<string, CoachItem> = {};
+  let changed = false;
+
+  for (const [rawId, item] of Object.entries(items)) {
+    const normalizedId = normalizeQuestionId(rawId, validIds);
+    if (!normalizedId) {
+      changed = true;
+      continue;
+    }
+
+    if (normalizedId !== rawId) {
+      changed = true;
+    }
+
+    migratedItems[normalizedId] = mergeCoachItem(migratedItems[normalizedId], item);
+  }
+
+  return { items: migratedItems, changed };
+}
+
 export function getCoachStore(): CoachStoreV1 {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -34,7 +85,18 @@ export function getCoachStore(): CoachStoreV1 {
     if (parsed.version !== 1 || typeof parsed.items !== "object") {
       return emptyStore();
     }
-    return parsed;
+
+    const migrated = migrateStoreItems(parsed.items);
+    const normalizedStore: CoachStoreV1 = {
+      version: 1,
+      items: migrated.items,
+    };
+
+    if (migrated.changed) {
+      saveStore(normalizedStore);
+    }
+
+    return normalizedStore;
   } catch {
     return emptyStore();
   }
@@ -148,6 +210,31 @@ export function getDueCount(): number {
   return getDueItems().length;
 }
 
+export function getCoachQueueCountForCategory(
+  allQuestions: Question[],
+  category: Category,
+): number {
+  const store = getCoachStore();
+  const idSet = new Set(
+    allQuestions
+      .filter((question) => question.category === category)
+      .map((question) => question.id)
+  );
+  return Object.keys(store.items).filter((id) => idSet.has(id)).length;
+}
+
+export function getDueCountForCategory(
+  allQuestions: Question[],
+  category: Category,
+): number {
+  const idSet = new Set(
+    allQuestions
+      .filter((question) => question.category === category)
+      .map((question) => question.id)
+  );
+  return getDueItems().filter(([id]) => idSet.has(id)).length;
+}
+
 /**
  * Select up to 10 questions for a coach session.
  *
@@ -157,11 +244,18 @@ export function getDueCount(): number {
  */
 export function selectCoachQuestions(
   allQuestions: Question[],
+  category?: Category,
 ): Question[] {
   const store = getCoachStore();
   const now = Date.now();
 
-  const entries = Object.entries(store.items);
+  const filteredQuestions = category
+    ? allQuestions.filter((question) => question.category === category)
+    : allQuestions;
+
+  const allowedIds = new Set(filteredQuestions.map((question) => question.id));
+
+  const entries = Object.entries(store.items).filter(([id]) => allowedIds.has(id));
   if (entries.length === 0) return [];
 
   // Separate due and non-due
@@ -189,5 +283,5 @@ export function selectCoachQuestions(
   }
 
   const idSet = new Set(selectedIds);
-  return allQuestions.filter((q) => idSet.has(q.id));
+  return filteredQuestions.filter((q) => idSet.has(q.id));
 }

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { QuestionCard } from "@/components/QuestionCard/QuestionCard";
 import { MascotLoading } from "@/components/Mascot/MascotLoading";
 import { useQuizContext } from "@/context/QuizContext";
-import { LEVEL_LABELS } from "@/types/quiz";
+import { CATEGORY_LABELS, LEVEL_LABELS } from "@/types/quiz";
 import { useKeyboardNav } from "@/hooks/useKeyboardNav";
 import styles from "./QuizPage.module.css";
 
@@ -98,8 +98,8 @@ export function QuizPage() {
           <span className={styles.levelBadge}>
             {state.mode === "coach"
               ? "🧠 Coach Mode"
-              : state.level
-                ? LEVEL_LABELS[state.level]
+              : state.level && state.category
+                ? `${CATEGORY_LABELS[state.category]} · ${LEVEL_LABELS[state.level]}`
                 : ""}
           </span>
           <span className={styles.counter}>

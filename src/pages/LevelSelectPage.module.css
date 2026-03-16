@@ -28,6 +28,80 @@
   color: var(--muted-foreground);
 }
 
+.categories {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  width: 100%;
+  max-width: 780px;
+}
+
+@media (max-width: 640px) {
+  .categories {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .categories {
+    grid-template-columns: 1fr;
+  }
+}
+
+.categoryCard {
+  border-radius: 1rem;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 1rem 1.1rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.categoryCard:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--neon-cyan) 35%, transparent);
+}
+
+.categoryCardSelected {
+  border-color: color-mix(in srgb, var(--neon-cyan) 45%, transparent);
+  box-shadow: var(--glow-cyan);
+}
+
+.categoryCardHighlighted {
+  outline: 2px solid var(--neon-cyan);
+  outline-offset: 2px;
+}
+
+.categoryHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.categoryIcon {
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
+}
+
+.categoryTitle {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.categoryDescription {
+  font-family: "Outfit", sans-serif;
+  font-size: 0.8rem;
+  color: var(--muted-foreground);
+  margin-top: 0.45rem;
+  line-height: 1.5;
+}
+
 .levels {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -57,6 +131,16 @@
   border-left: 4px solid transparent;
   transition: all 0.3s ease;
   animation: fadeInUp 0.5s ease-out both;
+}
+
+.levelCardDisabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.levelCardDisabled:hover {
+  transform: none;
+  box-shadow: none;
 }
 
 .levelCard:hover {

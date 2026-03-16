@@ -39,7 +39,7 @@ export function Layout({ children }: LayoutProps) {
           <Link to="/" className={styles.logo}>
             <span className={styles.logoJess}>Jess</span>
             <span className={styles.logoDivider}>—</span>
-            <span className={styles.logoTagline}>JS or Guess?</span>
+            <span className={styles.logoTagline}>Know It or Guess It?</span>
           </Link>
 
           <div className={styles.headerActions}>
