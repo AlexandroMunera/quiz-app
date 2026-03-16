@@ -4,7 +4,6 @@ import { useQuizContext } from "@/context/QuizContext";
 import { useAuthContext } from "@/context/AuthContext";
 import type { Category, Level } from "@/types/quiz";
 import {
-  CATEGORY_DESCRIPTIONS,
   CATEGORY_ICONS,
   CATEGORY_LABELS,
   LEVEL_DESCRIPTIONS,
@@ -181,11 +180,13 @@ export function LevelSelectPage() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <MascotBubble
-          message="Pick your challenge! 🎮"
-          size="md"
-          variant="info"
-        />
+        <div className={styles.headerBubble}>
+          <MascotBubble
+            message="Pick your challenge! 🎮"
+            size="md"
+            variant="info"
+          />
+        </div>
         <h1 className={styles.title}>Choose Your Level</h1>
         <p className={styles.subtitle}>
           Pick a topic first, then select the difficulty
@@ -220,7 +221,6 @@ export function LevelSelectPage() {
                 </span>
                 <span className={styles.categoryTitle}>{CATEGORY_LABELS[category]}</span>
               </div>
-              <p className={styles.categoryDescription}>{CATEGORY_DESCRIPTIONS[category]}</p>
             </button>
           );
         })}
@@ -288,30 +288,27 @@ export function LevelSelectPage() {
         </div>
         <p className={styles.coachDescription}>
           {selectedCategory && !coachEnabled && globalCoachTotal > 0
-            ? `No ${CATEGORY_LABELS[selectedCategory]} coach items yet. Complete a ${CATEGORY_LABELS[selectedCategory]} quiz and miss at least one question to populate this queue.`
+            ? `No ${CATEGORY_LABELS[selectedCategory]} items yet. Miss one in a ${CATEGORY_LABELS[selectedCategory]} quiz to add it.`
             : coachEnabled
             ? selectedCategory
-              ? `Practice missed ${CATEGORY_LABELS[selectedCategory]} questions with spaced repetition.`
-              : "Practice questions you've missed before. Powered by spaced repetition."
-            : "Complete a quiz and miss a question to unlock Coach Mode."}
+              ? `Review missed ${CATEGORY_LABELS[selectedCategory]} questions with spaced repetition.`
+              : "Review missed questions with spaced repetition."
+            : "Miss a question in any quiz to unlock Coach Mode."}
         </p>
         {showingPriorityReviewHint && (
           <p className={styles.coachSyncHint}>
-            No due now, showing priority review items.
+            Nothing due now, showing priority items.
           </p>
         )}
-        <p className={styles.coachSyncHint}>
-          Keyboard: Tab switches sections, arrows navigate, Enter selects.
-        </p>
         {!user && (
-          <p className={styles.coachSyncHint}>
-            ☁️ Sign in to sync Coach progress across devices
+          <p className={cn(styles.coachSyncHint, styles.coachHintMeta)}>
+            ☁️ Sign in to sync progress across devices.
           </p>
         )}
         {!coachEnabled && (
           <div className={styles.coachMascot}>
             <MascotBubble
-              message="Take a quiz first — I'll coach you on the tricky ones! 💪"
+              message="Take a quiz first. I will coach the tricky ones. 💪"
               size="sm"
               variant="info"
             />

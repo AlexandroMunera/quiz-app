@@ -264,6 +264,37 @@
   flex-shrink: 0;
 }
 
+.coffeeLink {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 0.2rem;
+  text-decoration: none;
+  border-radius: 0.8rem;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.coffeeLink:hover {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 0 10px color-mix(in srgb, var(--neon-amber) 35%, transparent));
+}
+
+.coffeeBadge {
+  width: 217px;
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.coffeeText {
+  font-family: "Outfit", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--muted-foreground);
+}
+
 @media (max-width: 520px) {
   .signInBanner {
     flex-direction: column;
